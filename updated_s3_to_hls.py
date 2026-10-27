@@ -10,34 +10,9 @@ Encoding settings mirror the TVNA MediaConvert job (640p rendition only):
   - 3-second HLS segments, GOP size 3 s, closed cadence, B-frame refs enabled
   - Input clipping: 00:00:40 → 00:02:50 (mirrors InputClippings in job JSON)
 
-  [§7 FIX] GOP size is now computed from the REAL detected source fps
-  (via ffprobe) instead of a hardcoded 30 fps assumption, and scene-change
-  keyframe insertion is disabled so segment durations stay uniform.
-
 Requirements:
     pip install boto3
     ffmpeg must be installed and on PATH
-
-AWS credentials are read from environment variables:
-    AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY
-    AWS_SESSION_TOKEN  (optional, for temporary credentials)
-
-Default region: us-east-1
-
-Usage:
-    python s3_to_hls.py \
-        --src-bucket my-input-bucket \
-        --src-key  videos/thisfile.mp4 \
-        --dst-bucket my-output-bucket \
-        --dst-prefix hls/my-video
-        # → uploads as hls/my-video/thisfile_640p.m3u8 + thisfile_640p_NNN.ts …
-
-    # To override the input clip window:
-    python s3_to_hls.py ... --clip-start 00:00:40 --clip-end 00:02:50
-
-    # To encode the full file with no clipping:
-    python s3_to_hls.py ... --no-clip
 """
 
 import argparse
