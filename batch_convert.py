@@ -13,41 +13,6 @@ into whole-broadcast HLS, written into a TESTING prefix in the SAME bucket:
         {YYYYMMDD}{CHANNEL}_640p_000.ts
         {YYYYMMDD}{CHANNEL}_640p_001.ts
         ...
-
-Mirrors the source's own Year -> Month -> Channel folder structure exactly,
-just moved from mpeg4/ to hls/zzz-RS-Testing/, with broadcast_id (nanoid)
-appended to the final folder name for DB traceability / S3 search.
-
-This does NOT touch mpeg4/ (read-only, source archive). It only ever writes
-under hls/zzz-RS-Testing/.
-
-This script calls the existing, UNMODIFIED s3_to_hls.py as a subprocess,
-always with --no-clip (whole broadcast, not the 00:00:40-00:02:50 default).
-
-Usage — single broadcast (recommended first run):
-    python batch_convert_vulstream_to_hls.py \
-        --bucket ltds-storage-gateway-tvnews \
-        --only-key vulstream/mpeg4/2007/10/ABC/20071008ABC.mp4 \
-        --dry-run
-
-Usage — one whole year (safer than the entire archive at once):
-    python batch_convert_vulstream_to_hls.py \
-        --bucket ltds-storage-gateway-tvnews \
-        --only-year 2007
-
-Usage — everything, 1968 through 2026 (only after the above are verified):
-    python batch_convert_vulstream_to_hls.py \
-        --bucket ltds-storage-gateway-tvnews
-
-Requires:
-    pip install boto3
-
-DB access is via RDS Data API (boto3 rds-data client) -- this cluster has
-no public MySQL endpoint, so a direct pymysql/mysql-connector connection
-will NOT work here. Credentials come from the resource/secret ARNs baked
-in below (same ones used for the manual CLI DESCRIBE/SHOW TABLES checks),
-not from env vars. The IAM role/user running this script needs
-rds-data:ExecuteStatement and secretsmanager:GetSecretValue on that secret.
 """
 
 import argparse
